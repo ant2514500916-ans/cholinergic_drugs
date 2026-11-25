@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خريطة ذهنية تفاعلية: أدوية الجهاز العصبي الذاتي | Cholinergic Mind Map</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        arabic: ['Cairo', 'sans-serif'],
+                        english: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .font-en {
+            font-family: 'Inter', sans-serif;
+            direction: ltr;
+        }
+        .font-ar {
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.7);
+        }
+        /* Tree Connector Lines */
+        .branch-line-vertical {
+            position: relative;
+        }
+        .branch-line-vertical::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 1.5rem;
+            right: 1.25rem;
+            width: 2px;
+            background-color: currentColor;
+            opacity: 0.25;
+        }
+        .drug-node-connector {
+            position: relative;
+        }
+        .drug-node-connector::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -1.25rem;
+            width: 1.25rem;
+            height: 2px;
+            background-color: currentColor;
+            opacity: 0.25;
+        }
+        /* Smooth transitions */
+        .node-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .node-card:hover {
+            transform: translateY(-2px);
+        }
+        @keyframes pulseHighlight {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+            50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+        }
+        .highlight-match {
+            animation: pulseHighlight 2s infinite;
+            border-color: #f59e0b !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Top Navigation & Controls Bar -->
+    <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row items-center justify-between gap-3">
+            
+            <!-- Title & Subtitle -->
+            <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid fa-diagram-project text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">
+                            أدوية الجهاز العصبي الذاتي - الكولينية
+                        </h1>
+                        <p class="text-xs font-en text-slate-500 dark:text-slate-400 font-medium">
+                            Cholinergic Agonists & Antagonists (Mind Map)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mobile Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="تبديل المظهر / Toggle Theme">
+                    <i id="theme-icon-mobile" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+
+            <!-- Search & Action Controls -->
+            <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
+                <!-- Search Input -->
+                <div class="relative flex-grow sm:flex-grow-0 sm:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        oninput="handleSearch(this.value)"
+                        placeholder="ابحث بالاسم أو الاستخدام (Glaucoma)..." 
+                        class="w-full pr-9 pl-8 py-2 text-sm rounded-xl bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-teal-500 focus:bg-white dark:focus:bg-slate-900 outline-none transition"
+                    >
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Expand / Collapse All -->
+                <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                    <button onclick="expandAll()" class="px-3 py-1.5 text-xs font-semibold rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5" title="فتح الكل">
+                        <i class="fa-solid fa-angles-down text-teal-600 dark:text-teal-400"></i>
+                        <span>فتح الكل</span>
+                    </button>
+                    <button onclick="collapseAll()" class="px-3 py-1.5 text-xs font-semibold rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5" title="طي الكل">
+                        <i class="fa-solid fa-angles-up text-amber-600 dark:text-amber-400"></i>
+                        <span>طي الكل</span>
+                    </button>
+                </div>
+
+                <!-- Zoom Controls -->
+                <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                    <button onclick="adjustZoom(-0.1)" class="p-1.5 px-2.5 text-xs font-bold rounded-lg hover:bg-white dark:hover:bg-slate-700 transition" title="تصغير">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span id="zoomLevelText" class="px-2 text-xs font-en font-semibold text-slate-600 dark:text-slate-300">100%</span>
+                    <button onclick="adjustZoom(0.1)" class="p-1.5 px-2.5 text-xs font-bold rounded-lg hover:bg-white dark:hover:bg-slate-700 transition" title="تكبير">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Desktop Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="hidden lg:flex p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="تبديل المظهر / Toggle Theme">
+                    <i id="theme-icon-desktop" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace: Interactive Mind Map + Side Detail Panel -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+        
+        <!-- Left/Main Area: Mind Map Tree Canvas -->
+        <div class="flex-1 overflow-x-auto pb-8">
+            <div id="mindMapContainer" class="transition-transform duration-200 origin-top-right space-y-6">
+                
+                <!-- Root Node -->
+                <div class="bg-gradient-to-l from-slate-800 to-slate-900 dark:from-teal-950 dark:to-slate-900 text-white p-5 rounded-2xl shadow-lg border border-slate-700 dark:border-teal-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-teal-300 shrink-0">
+                            <i class="fa-solid fa-brain text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/30 mb-1">
+                                العقدة الرئيسية • Root Node
+                            </span>
+                            <h2 class="text-xl font-extrabold tracking-tight">أدوية الجهاز العصبي الذاتي - الكولينية</h2>
+                            <p class="text-sm font-en text-slate-300">Cholinergic Agonists & Cholinergic Antagonists</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-300 bg-white/10 px-3 py-2 rounded-xl border border-white/10">
+                        <i class="fa-solid fa-hand-pointer text-teal-300 ml-1"></i>
+                        اضغط على أي دواء لعرض التفاصيل الكاملة باللغتين
+                    </div>
+                </div>
+
+                <!-- Search Status Banner -->
+                <div id="searchStatus" class="hidden bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-2.5 rounded-xl text-sm flex items-center justify-between">
+                    <span id="searchStatusText"></span>
+                    <button onclick="clearSearch()" class="underline font-bold text-xs">إلغاء البحث</button>
+                </div>
+
+                <!-- 4 Main Branches Grid -->
+                <div id="branchesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Branches injected dynamically by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Right/Bottom Area: Detailed Drug Inspector Panel -->
+        <aside id="detailPanel" class="w-full lg:w-[440px] shrink-0">
+            <div class="sticky top-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col max-h-[calc(100vh-6rem)]">
+                
+                <!-- Panel Header -->
+                <div id="panelHeader" class="p-5 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span id="panelCategoryBadge" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300">
+                            مستعرض الأدوية • Drug Inspector
+                        </span>
+                        <div class="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                            <button onclick="setLangMode('both')" id="btn-lang-both" class="px-2.5 py-1 rounded-lg font-bold bg-teal-600 text-white transition">معاً</button>
+                            <button onclick="setLangMode('ar')" id="btn-lang-ar" class="px-2.5 py-1 rounded-lg font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">عربي</button>
+                            <button onclick="setLangMode('en')" id="btn-lang-en" class="px-2.5 py-1 rounded-lg font-en font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">EN</button>
+                        </div>
+                    </div>
+                    <h3 id="panelDrugTitleEn" class="text-xl font-en font-extrabold text-slate-900 dark:text-white">
+                        Select a Drug Node
+                    </h3>
+                    <p id="panelDrugTitleAr" class="text-sm font-bold text-slate-600 dark:text-slate-300 mt-0.5">
+                        اختر أي دواء من الخريطة الذهنية
+                    </p>
+                </div>
+
+                <!-- Panel Body -->
+                <div id="panelBody" class="p-5 overflow-y-auto space-y-4 text-sm leading-relaxed">
+                    <div class="text-center py-10 text-slate-400 dark:text-slate-500 space-y-3">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mx-auto flex items-center justify-center text-2xl">
+                            <i class="fa-solid fa-pills text-teal-500"></i>
+                        </div>
+                        <p class="font-semibold text-slate-600 dark:text-slate-300">لم يتم تحديد دواء بعد</p>
+                        <p class="text-xs max-w-xs mx-auto">اضغط على أي بطاقة دواء في الفروع الأربعة لعرض الآلية، الاستخدامات، الآثار الجانبية، والترياق بنص المحاضرة الدقيق.</p>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Mobile Floating Modal for Drug Details (Visible only on small screens when a drug is clicked) -->
+    <div id="mobileModal" class="fixed inset-0 z-50 hidden lg:hidden bg-slate-950/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white dark:bg-slate-900 w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-h-[88vh] flex flex-col overflow-hidden animate-slide-up">
+            <!-- Modal Header -->
+            <div class="p-4 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-start justify-between gap-3">
+                <div>
+                    <span id="modalCategoryBadge" class="inline-block px-2 py-0.5 text-[11px] font-bold rounded-md bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-300 mb-1"></span>
+                    <h3 id="modalDrugTitleEn" class="text-lg font-en font-extrabold text-slate-900 dark:text-white"></h3>
+                    <p id="modalDrugTitleAr" class="text-xs font-bold text-slate-600 dark:text-slate-300"></p>
+                </div>
+                <button onclick="closeMobileModal()" class="p-2 rounded-xl bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-200 hover:text-rose-500">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <!-- Modal Language Toggle -->
+            <div class="px-4 py-2 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-500">لغة العرض:</span>
+                <div class="flex items-center gap-1 bg-slate-200/70 dark:bg-slate-800 p-1 rounded-xl text-xs">
+                    <button onclick="setLangMode('both')" id="m-btn-lang-both" class="px-2.5 py-1 rounded-lg font-bold bg-teal-600 text-white">معاً</button>
+                    <button onclick="setLangMode('ar')" id="m-btn-lang-ar" class="px-2.5 py-1 rounded-lg font-semibold">عربي</button>
+                    <button onclick="setLangMode('en')" id="m-btn-lang-en" class="px-2.5 py-1 rounded-lg font-en font-semibold">EN</button>
+                </div>
+            </div>
+            <!-- Modal Body -->
+            <div id="modalBody" class="p-4 overflow-y-auto space-y-4 text-sm leading-relaxed"></div>
+        </div>
+    </div>
+
+    <script>
+        // Exact Lecture Data Structured Strictly From Provided Text
+        const lectureBranches = [
+            {
+                id: 'direct-agonists',
+                titleAr: '1. محفزات الكولين المباشرة',
+                titleEn: 'Direct-acting cholinergic agonists',
+                colorTheme: 'emerald',
+                icon: 'fa-bolt',
+                expanded: true,
+                drugs: [
+                    {
+                        id: 'acetylcholine',
+                        nameEn: 'Acetylcholine',
+                        nameAr: 'أسيتيل كولين',
+                        badgeEn: 'Muscarinic & Nicotinic',
+                        badgeAr: 'مسكاريني ونيكوتيني',
+                        sections: [
+                            {
+                                labelAr: 'الخصائص والآلية',
+                                labelEn: 'Properties & Mechanism',
+                                ar: 'يفتقر إلى الأهمية العلاجية بسبب تعدد تأثيراته وسرعة تعطيله بواسطة الكولينسترازات. يعمل على مستقبلات المسكارين والنيكوتين معاً.',
+                                en: 'Lacks therapeutic importance because it has multiple actions and its rapid inactivation by the cholinesterases. Acts on both muscarinic and nicotinic receptors.'
+                            },
+                            {
+                                labelAr: 'التأثيرات (Actions)',
+                                labelEn: 'Actions',
+                                ar: 'تشمل تأثيراته خفض معدل ضربات القلب، النتاج القلبي وضغط الدم، وزيادة الإفراز اللعابي وتحفيز الإفرازات والحركية المعوية، وتعزيز الإفرازات القصيبية، وطرد البول، وتضيق الحدقة (miosis).',
+                                en: 'Its actions include decreases the heart rate, cardiac output and blood pressure, increases salivary secretion and stimulates intestinal secretions and motility, enhances bronchiolar secretions, expulsion of urine, miosis.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'bethanechol',
+                        nameEn: 'Bethanechol',
+                        nameAr: 'بيثانيكول',
+                        badgeEn: 'Strong Muscarinic',
+                        badgeAr: 'نشاط مسكاريني قوي',
+                        sections: [
+                            {
+                                labelAr: 'الآلية ومناطق التأثير',
+                                labelEn: 'Mechanism & Major Actions',
+                                ar: 'يفتقر إلى التأثيرات النيكوتينية ولكن له نشاط مسكاريني قوي. تأثيراته الرئيسية على المثانة والجهاز الهضمي.',
+                                en: 'Lacks nicotinic actions but does have strong muscarinic activity. Its major actions are on bladder and GI tract.'
+                            },
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: 'يُستخدم لتحفيز المثانة الضعيفة/الرخوة (atonic bladder) بعد الولادة أو بعد الجراحة وتضخم القولون (megacolon).',
+                                en: 'Used to stimulate the atonic bladder (postpartum or postoperative) and megacolon.'
+                            },
+                            {
+                                labelAr: 'الآثار الجانبية (Adverse effects)',
+                                labelEn: 'Adverse effects',
+                                ar: 'التعرق، سيلان اللعاب، الاحمرار (flushing)، انخفاض ضغط الدم، الغثيان، ألم البطن، الإسهال، وتشنج القصبات الهوائية.',
+                                en: 'Sweating, salivation, flushing, hypotension, nausea, abdominal pain, diarrhea, and bronchospasm.'
+                            },
+                            {
+                                labelAr: 'الترياق / الملاحظات (Antidote)',
+                                labelEn: 'Antidote / Notes',
+                                ar: 'قد يُعطى Atropine للتغلب على الآثار الجانبية القلبية الوعائية أو المضيقة للقصبات لهذا العامل.',
+                                en: 'Atropine may be administered to overcome cardiovascular or bronchoconstrictor side effects of this agent.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'carbachol',
+                        nameEn: 'Carbachol',
+                        nameAr: 'كارباكول',
+                        badgeEn: 'Ophthalmology (Glaucoma)',
+                        badgeAr: 'طب العيون (الزرق)',
+                        sections: [
+                            {
+                                labelAr: 'الآلية والتأثيرات',
+                                labelEn: 'Actions',
+                                ar: 'له تأثيرات مسكارينية ونيكوتينية. له تأثيرات عميقة على كل من الجهاز القلبي الوعائي والجهاز الهضمي.',
+                                en: 'Has muscarinic and nicotinic actions. Has profound effects on both the cardiovascular and GI systems.'
+                            },
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: 'بسبب عدم انتقائية المستقبلات وطول مدة التأثير، نادراً ما يُستخدم باستثناء العين كعامل مقبض للحدقة (miotic agent) لعلاج الزرق (glaucoma).',
+                                en: 'Because of receptor non-selectivity, and long duration of action, it is rarely used except in the eye as a miotic agent to treat glaucoma.'
+                            },
+                            {
+                                labelAr: 'الآثار الجانبية (Adverse effects)',
+                                labelEn: 'Adverse effects',
+                                ar: 'تحدث آثار جانبية قليلة أو معدومة عند استخدامه في طب العيون.',
+                                en: 'Little or no side effects occur when used ophthalmologically.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'pilocarpine',
+                        nameEn: 'Pilocarpine',
+                        nameAr: 'بيلوكاربين',
+                        badgeEn: 'Rapid Miosis',
+                        badgeAr: 'تضيق سريع للحدقة',
+                        sections: [
+                            {
+                                labelAr: 'الآلية والاستخدامات (Uses)',
+                                labelEn: 'Activity & Uses',
+                                ar: 'يُظهر نشاطاً مسكارينياً ويُستخدم أساساً في طب العيون لإحداث تضيق سريع للحدقة (لعلاج الزرق / glaucoma).',
+                                en: 'Exhibits muscarinic activity and is used primarily in ophthalmology to produce rapid miosis (for glaucoma).'
+                            },
+                            {
+                                labelAr: 'الآثار الجانبية (Adverse effects)',
+                                labelEn: 'Adverse effects',
+                                ar: 'اضطرابات الجهاز العصبي المركزي (CNS disturbances)، التعرق (diaphoresis) وسيلان اللعاب.',
+                                en: 'CNS disturbances, sweating (diaphoresis) and salivation.'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'indirect-agonists',
+                titleAr: '2. محفزات الكولين غير المباشرة (مثبطات AChE)',
+                titleEn: 'Indirect-acting cholinergic agonists (AChE inhibitors)',
+                colorTheme: 'blue',
+                icon: 'fa-shield-halved',
+                expanded: true,
+                drugs: [
+                    {
+                        id: 'edrophonium',
+                        nameEn: 'Edrophonium',
+                        nameAr: 'إدروفونيوم',
+                        badgeEn: 'Short-acting AChE inhibitor',
+                        badgeAr: 'قصير المفعول',
+                        sections: [
+                            {
+                                labelAr: 'التصنيف',
+                                labelEn: 'Classification',
+                                ar: 'مثبط قصير المفعول لـ AChE.',
+                                en: 'Short-acting AChE inhibitor.'
+                            },
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: '• يُستخدم في تشخيص الوهن العضلي الوبيل (myasthenia gravis)، وهو مرض مناعي ذاتي ناتج عن أجسام مضادة لمستقبل النيكوتين عند الوصلات العصبية العضلية (NMJs). يؤدي الحقن الوريدي لـ edrophonium إلى زيادة سريعة في قوة العضلات.\n• يُستخدم أيضاً لعكس تأثيرات حاصرات العضلات غير المزيلة للاستقطاب (nondepolarizing neuromuscular blockers) بعد الجراحة.',
+                                en: '• Used in the diagnosis of myasthenia gravis, which is an autoimmune disease caused by antibodies to the nicotinic receptor at NMJs. Intravenous injection of edrophonium leads to a rapid increase in muscle strength.\n• Also used for reversing the effects of nondepolarizing neuromuscular blockers after surgery.'
+                            },
+                            {
+                                labelAr: 'الترياق (Antidote)',
+                                labelEn: 'Antidote',
+                                ar: 'Atropine هو الترياق (antidote).',
+                                en: 'Atropine is the antidote.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'physostigmine',
+                        nameEn: 'Physostigmine',
+                        nameAr: 'فيزوستيغمين',
+                        badgeEn: 'Intermediate-acting',
+                        badgeAr: 'متوسط المفعول',
+                        sections: [
+                            {
+                                labelAr: 'الآلية والتصنيف',
+                                labelEn: 'Mechanism & Duration',
+                                ar: 'يحفز مستقبلات المسكارين ومستقبلات النيكوتين في الوصل العصبي العضلي (NMJ). يُعد عاملاً متوسط المفعول (intermediate-acting agent).',
+                                en: 'Stimulates the muscarinic and nicotinic receptors of the NMJ. Considered to be an intermediate-acting agent.'
+                            },
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: '• يزيد حركية الأمعاء والمثانة.\n• يُحدث تضيق الحدقة (miosis) ويخفض ضغط العين الداخلي (لعلاج الزرق / glaucoma).\n• يُستخدم لعلاج جرعات زائدة من أدوية مضادات الكولين (anticholinergic drugs).',
+                                en: '• Increases intestinal and bladder motility.\n• Produces miosis, lowers the intraocular pressure (for glaucoma).\n• Used for treatment of overdoses of anticholinergic drugs.'
+                            },
+                            {
+                                labelAr: 'الآثار الجانبية (Adverse effects)',
+                                labelEn: 'Adverse effects',
+                                ar: 'تشنجات (بجرعات عالية)، بطء القلب (bradycardia)، شلل العضلات الهيكلية.',
+                                en: 'Convulsions (high doses), bradycardia, paralysis of skeletal muscle.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'neostigmine',
+                        nameEn: 'Neostigmine',
+                        nameAr: 'نيوستيغمين',
+                        badgeEn: 'NMJ & GI/Bladder',
+                        badgeAr: 'الوهن العضلي وترياق',
+                        sections: [
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: '• يُستخدم لتحفيز المثانة والجهاز الهضمي.\n• يُستخدم كترياق (antidote) لـ tubocurarine وعوامل حصر عصبية عضلية تنافسية أخرى.\n• يُستخدم لعلاج الوهن العضلي الوبيل (myasthenia gravis).',
+                                en: '• Used to stimulate the bladder and GI tract.\n• Used as an antidote for tubocurarine and other competitive neuromuscular blocking agents.\n• Used to treat myasthenia gravis.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'pyridostigmine',
+                        nameEn: 'Pyridostigmine',
+                        nameAr: 'بيريدوستيغمين',
+                        badgeEn: 'Myasthenia Gravis',
+                        badgeAr: 'الوهن العضلي الوبيل',
+                        sections: [
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: 'يُستخدم للوهن العضلي الوبيل (myasthenia gravis).',
+                                en: 'Used for myasthenia gravis.'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'antimuscarinics',
+                titleAr: '3. مضادات المسكارين',
+                titleEn: 'Antimuscarinic agents (antagonist)',
+                colorTheme: 'purple',
+                icon: 'fa-ban',
+                expanded: true,
+                drugs: [
+                    {
+                        id: 'atropine',
+                        nameEn: 'Atropine',
+                        nameAr: 'أتروبين',
+                        badgeEn: 'High Muscarinic Affinity',
+                        badgeAr: 'ألفة عالية للمسكارين',
+                        sections: [
+                            {
+                                labelAr: 'التأثيرات على الأعضاء (Actions)',
+                                labelEn: 'Organ Actions',
+                                ar: 'له ألفة عالية لمستقبلات المسكارين:\n• العين: يسبب توسع حدقة مستمراً (persistent mydriasis).\n• الجهاز الهضمي (GI): يقلل نشاط الجهاز الهضمي (مضاد للتشنج / antispasmodic).\n• القلب: يسبب بطء القلب (bradycardia) بجرعات منخفضة، وتسرع القلب (tachycardia) بجرعات أعلى.\n• الإفرازات: يمنع إفرازات الغدد اللعابية، العرقية، والدمعية.',
+                                en: 'Has a high affinity for muscarinic receptors:\n• Eye: causes persistent mydriasis.\n• Gastrointestinal (GI): reduces the activity of the GI tract (antispasmodic).\n• Heart: causes bradycardia at low doses, and tachycardia at higher doses.\n• Secretions: blocks the salivary glands, sweat and lacrimal glands secretions.'
+                            },
+                            {
+                                labelAr: 'الآثار الجانبية (Adverse effects)',
+                                labelEn: 'Adverse effects',
+                                ar: 'جفاف الفم، تشوش الرؤية، تسرع القلب، احتباس البول، الإمساك، الارتباك، الهلوسة، والهذيان.',
+                                en: 'Dry mouth, blurred vision, tachycardia, urinary retention, constipation, confusion, hallucinations, and delirium.'
+                            },
+                            {
+                                labelAr: 'سياقات أخرى في المحاضرة (Antidote Roles)',
+                                labelEn: 'Other Contexts in Lecture',
+                                ar: '• قد يُعطى للتغلب على الآثار الجانبية القلبية الوعائية أو المضيقة للقصبات لـ bethanechol.\n• هو الترياق لـ edrophonium.\n• يُستخدم في علاج سمية مثبطات AChE لمنع زيادة الإفراز القصبي واللعاب، وتضيق القصبات، وبطء القلب.',
+                                en: '• May be administered to overcome cardiovascular or bronchoconstrictor side effects of bethanechol.\n• Is the antidote for edrophonium.\n• Used in treatment of toxicity with AChE inhibitors to prevent increased bronchial secretion and saliva, bronchoconstriction, and bradycardia.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'scopolamine',
+                        nameEn: 'Scopolamine',
+                        nameAr: 'سكوبولامين',
+                        badgeEn: 'CNS & Motion Sickness',
+                        badgeAr: 'تأثير مركزي أطول',
+                        sections: [
+                            {
+                                labelAr: 'الخصائص والمقارنة مع Atropine',
+                                labelEn: 'Properties vs Atropine',
+                                ar: 'يُحدث تأثيرات مشابهة لـ atropine. ومع ذلك، فإن scopolamine له تأثير أكبر على الجهاز العصبي المركزي (CNS) ومدة تأثير أطول. على عكس atropine، يُحدث scopolamine تهدئة (sedation)، ولكن بجرعات أعلى يمكن أن يُحدث إثارة (excitement).',
+                                en: 'Produces effects similar to atropine. However, scopolamine has greater action on the CNS and a longer duration of action. In contrast to atropine, scopolamine produces sedation, but at higher doses it can produce excitement.'
+                            },
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: 'يُستخدم لمضاد دوار الحركة (anti-motion sickness) ومنع الذاكرة قصيرة المدى.',
+                                en: 'Used for anti-motion sickness, blocking short-term memory.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'ipratropium-tiotropium',
+                        nameEn: 'Ipratropium & Tiotropium',
+                        nameAr: 'إبراتروبيوم وتيوتروبيوم (استنشاق)',
+                        badgeEn: 'Inhaled Bronchodilators',
+                        badgeAr: 'موسعات قصبات استنشاقية',
+                        sections: [
+                            {
+                                labelAr: 'الاستخدامات (Uses)',
+                                labelEn: 'Uses',
+                                ar: 'مُعتمدان كموسعات للقصبات (bronchodilators) للمرضى المصابين بالتهاب القصبات المزمن وانتفاخ الرئة (emphysema)، وللربو في المرضى غير القادرين على أخذ محفزات الأدرينالين (adrenergic agonists).',
+                                en: 'Approved as bronchodilators for patients with chronic bronchitis and emphysema, for asthma in patients who are unable to take adrenergic agonists.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'tropicamide-cyclopentolate',
+                        nameEn: 'Tropicamide & Cyclopentolate',
+                        nameAr: 'تروبيكاميد وسيكلوبنتولات',
+                        badgeEn: 'Ophthalmic Solutions',
+                        badgeAr: 'محاليل عينية',
+                        sections: [
+                            {
+                                labelAr: 'الاستخدامات والمدة (Uses & Duration)',
+                                labelEn: 'Uses & Duration',
+                                ar: 'مشابهان لـ atropine كمحاليل عينية لتوسيع الحدقة (mydriasis) وشلل الهدبي (cycloplegia). مدة تأثيرهما أقصر من مدة تأثير atropine.',
+                                en: 'Similar to atropine as ophthalmic solutions for mydriasis and cycloplegia. Their duration of action is shorter than that of atropine.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'benztropine-trihexyphenidyl',
+                        nameEn: 'Benztropine & Trihexyphenidyl',
+                        nameAr: 'بنزتروبين وترايهيكسيفينيديل',
+                        badgeEn: 'Parkinson Disease',
+                        badgeAr: 'داء باركنسون',
+                        sections: [
+                            {
+                                labelAr: 'الآلية والاستخدامات (Uses)',
+                                labelEn: 'Mechanism & Uses',
+                                ar: 'عاملان مضادان للمسكارين يعملان مركزياً واستُخدما في علاج داء باركنسون (Parkinson disease).',
+                                en: 'Centrally acting antimuscarinic agents that have been used in the treatment of Parkinson disease.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'oxybutynin',
+                        nameEn: 'Oxybutynin',
+                        nameAr: 'أوكسيبوتينين',
+                        badgeEn: 'Bladder / Enuresis',
+                        badgeAr: 'المثانة / سلس البول',
+                        sections: [
+                            {
+                                labelAr: 'الآلية والاستخدامات (Uses)',
+                                labelEn: 'Mechanism & Uses',
+                                ar: 'يثبط مستقبلات المسكارين في المثانة، وبذلك تزداد سعة المثانة ويقل تكرار الانقباضات. وبالتالي يُستخدم لعلاج سلس البول الليلي/التبول اللاإرادي (enuresis).',
+                                en: 'Blocks muscarinic receptors in the bladder, so, bladder capacity is increased, and the frequency of contractions is reduced. Thus, it is used for treatment of enuresis.'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'other-drugs',
+                titleAr: '4. أدوية أخرى مذكورة في المحاضرة',
+                titleEn: 'Other drugs mentioned in the lecture',
+                colorTheme: 'amber',
+                icon: 'fa-kit-medical',
+                expanded: true,
+                drugs: [
+                    {
+                        id: 'hexamethonium',
+                        nameEn: 'Hexamethonium',
+                        nameAr: 'هيكساميثونيوم',
+                        badgeEn: 'Autonomic Ganglia Blocker',
+                        badgeAr: 'حاصر العقد الذاتية',
+                        sections: [
+                            {
+                                labelAr: 'الوظيفة والآلية (Action)',
+                                labelEn: 'Action',
+                                ar: 'يثبط بشكل انتقائي مستقبلات النيكوتين في العقد الذاتية (autonomic ganglia).',
+                                en: 'Selectively blocks the nicotinic receptors of autonomic ganglia.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'tubocurarine',
+                        nameEn: 'Tubocurarine',
+                        nameAr: 'توبوكورارين',
+                        badgeEn: 'NMJ Nicotinic Blocker',
+                        badgeAr: 'حاصر الوصل العصبي العضلي',
+                        sections: [
+                            {
+                                labelAr: 'الوظيفة والترياق (Action & Antidote)',
+                                labelEn: 'Action & Antidote',
+                                ar: 'يثبط مستقبلات النيكوتين عند الوصل العصبي العضلي (NMJ). يُستخدم Neostigmine كترياق لـ tubocurarine.',
+                                en: 'Blocks nicotinic receptors at the neuromuscular junction (NMJ). Neostigmine is used as an antidote for tubocurarine.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'pralidoxime',
+                        nameEn: 'Pralidoxime',
+                        nameAr: 'براليدوكسيم',
+                        badgeEn: 'AChE Reactivator',
+                        badgeAr: 'إعادة تنشيط AChE',
+                        sections: [
+                            {
+                                labelAr: 'الاستخدام في علاج السمية',
+                                labelEn: 'Use in Toxicity Treatment',
+                                ar: 'يمكنه إعادة تنشيط AChE المثبط في علاج سمية مثبطات AChE.',
+                                en: 'Can reactivate the inhibited AChE in the treatment of toxicity with AChE inhibitors.'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'diazepam',
+                        nameEn: 'Diazepam',
+                        nameAr: 'ديازيبام',
+                        badgeEn: 'Anticonvulsant in Toxicity',
+                        badgeAr: 'لتقليل التشنج المستمر',
+                        sections: [
+                            {
+                                labelAr: 'الاستخدام في علاج السمية',
+                                labelEn: 'Use in Toxicity Treatment',
+                                ar: 'يُستخدم في علاج سمية مثبطات AChE لتقليل التشنج المستمر.',
+                                en: 'Used in the treatment of toxicity with AChE inhibitors to reduce the persistent convulsion.'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Application State
+        let selectedDrugId = null;
+        let langMode = 'both'; // 'both', 'ar', 'en'
+        let searchQuery = '';
+        let zoomLevel = 1;
+
+        // Color Styling Map
+        const themeStyles = {
+            emerald: {
+                headerBg: 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800/70',
+                iconBg: 'bg-emerald-600 text-white',
+                titleText: 'text-emerald-900 dark:text-emerald-200',
+                subText: 'text-emerald-700 dark:text-emerald-400',
+                lineColor: 'text-emerald-500',
+                cardHover: 'hover:border-emerald-400 dark:hover:border-emerald-500',
+                cardActive: 'ring-2 ring-emerald-500 border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/60',
+                badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300'
+            },
+            blue: {
+                headerBg: 'bg-sky-50 dark:bg-sky-950/50 border-sky-200 dark:border-sky-800/70',
+                iconBg: 'bg-sky-600 text-white',
+                titleText: 'text-sky-900 dark:text-sky-200',
+                subText: 'text-sky-700 dark:text-sky-400',
+                lineColor: 'text-sky-500',
+                cardHover: 'hover:border-sky-400 dark:hover:border-sky-500',
+                cardActive: 'ring-2 ring-sky-500 border-sky-500 bg-sky-50/70 dark:bg-sky-950/60',
+                badge: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-300'
+            },
+            purple: {
+                headerBg: 'bg-purple-50 dark:bg-purple-950/50 border-purple-200 dark:border-purple-800/70',
+                iconBg: 'bg-purple-600 text-white',
+                titleText: 'text-purple-900 dark:text-purple-200',
+                subText: 'text-purple-700 dark:text-purple-400',
+                lineColor: 'text-purple-500',
+                cardHover: 'hover:border-purple-400 dark:hover:border-purple-500',
+                cardActive: 'ring-2 ring-purple-500 border-purple-500 bg-purple-50/70 dark:bg-purple-950/60',
+                badge: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-300'
+            },
+            amber: {
+                headerBg: 'bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-800/70',
+                iconBg: 'bg-amber-600 text-white',
+                titleText: 'text-amber-900 dark:text-amber-200',
+                subText: 'text-amber-700 dark:text-amber-400',
+                lineColor: 'text-amber-500',
+                cardHover: 'hover:border-amber-400 dark:hover:border-amber-500',
+                cardActive: 'ring-2 ring-amber-500 border-amber-500 bg-amber-50/70 dark:bg-amber-950/60',
+                badge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300'
+            }
+        };
+
+        // Check if drug matches search query
+        function drugMatchesSearch(drug, query) {
+            if (!query) return true;
+            const q = query.toLowerCase().trim();
+            if (drug.nameEn.toLowerCase().includes(q) || drug.nameAr.includes(q)) return true;
+            if (drug.badgeEn.toLowerCase().includes(q) || drug.badgeAr.includes(q)) return true;
+            return drug.sections.some(sec => 
+                sec.ar.toLowerCase().includes(q) || 
+                sec.en.toLowerCase().includes(q) ||
+                sec.labelAr.includes(q) ||
+                sec.labelEn.toLowerCase().includes(q)
+            );
+        }
+
+        // Render Mind Map Branches & Nodes
+        function renderMindMap() {
+            const grid = document.getElementById('branchesGrid');
+            grid.innerHTML = '';
+            let totalMatches = 0;
+
+            lectureBranches.forEach(branch => {
+                const styles = themeStyles[branch.colorTheme];
+                const matchingDrugs = branch.drugs.filter(d => drugMatchesSearch(d, searchQuery));
+                
+                if (searchQuery) {
+                    totalMatches += matchingDrugs.length;
+                }
+
+                // Auto-expand branch if searching and has matches
+                const isExpanded = searchQuery ? matchingDrugs.length > 0 : branch.expanded;
+
+                const branchEl = document.createElement('div');
+                branchEl.className = `bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col transition-all ${searchQuery && matchingDrugs.length === 0 ? 'opacity-40' : 'opacity-100'}`;
+
+                // Branch Header (Clickable to collapse/expand)
+                const headerHtml = `
+                    <button onclick="toggleBranch('${branch.id}')" class="w-full text-right p-4 border-b ${styles.headerBg} flex items-center justify-between gap-3 transition hover:brightness-95">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl ${styles.iconBg} flex items-center justify-center shadow-sm shrink-0">
+                                <i class="fa-solid ${branch.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-base ${styles.titleText}">${branch.titleAr}</h3>
+                                <p class="text-xs font-en font-medium ${styles.subText}">${branch.titleEn}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-300">
+                                ${branch.drugs.length}
+                            </span>
+                            <div class="w-7 h-7 rounded-lg bg-white/70 dark:bg-slate-800/70 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} text-xs"></i>
+                            </div>
+                        </div>
+                    </button>
+                `;
+
+                // Drug Nodes List inside Branch
+                let nodesHtml = '';
+                if (isExpanded) {
+                    nodesHtml = `<div class="p-4 pr-10 branch-line-vertical ${styles.lineColor} space-y-3">`;
+                    branch.drugs.forEach(drug => {
+                        const isMatch = searchQuery && drugMatchesSearch(drug, searchQuery);
+                        const isDimmed = searchQuery && !isMatch;
+                        const isSelected = selectedDrugId === drug.id;
+
+                        nodesHtml += `
+                            <div 
+                                onclick="selectDrug('${branch.id}', '${drug.id}')"
+                                class="drug-node-connector node-card cursor-pointer p-3.5 rounded-xl border bg-slate-50/70 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 ${styles.cardHover} ${isSelected ? styles.cardActive : ''} ${isMatch ? 'highlight-match' : ''} ${isDimmed ? 'opacity-35' : ''}"
+                            >
+                                <div class="flex items-start justify-between gap-2">
+                                    <div>
+                                        <div class="font-en font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                                            <span>${drug.nameEn}</span>
+                                            ${isSelected ? '<i class="fa-solid fa-circle-check text-teal-500 text-xs"></i>' : ''}
+                                        </div>
+                                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
+                                            ${drug.nameAr}
+                                        </div>
+                                    </div>
+                                    <span class="px-2 py-0.5 text-[11px] font-semibold rounded-lg ${styles.badge} shrink-0">
+                                        ${drug.badgeAr}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    nodesHtml += `</div>`;
+                }
+
+                branchEl.innerHTML = headerHtml + nodesHtml;
+                grid.appendChild(branchEl);
+            });
+
+            // Update search status banner
+            const statusBanner = document.getElementById('searchStatus');
+            const statusText = document.getElementById('searchStatusText');
+            if (searchQuery) {
+                statusBanner.classList.remove('hidden');
+                statusText.textContent = `نتائج البحث عن "${searchQuery}": تم العثور على ${totalMatches} دواء مطابق.`;
+            } else {
+                statusBanner.classList.add('hidden');
+            }
+        }
+
+        // Toggle single branch expand/collapse
+        function toggleBranch(branchId) {
+            const branch = lectureBranches.find(b => b.id === branchId);
+            if (branch) {
+                branch.expanded = !branch.expanded;
+                renderMindMap();
+            }
+        }
+
+        // Expand All Branches
+        function expandAll() {
+            lectureBranches.forEach(b => b.expanded = true);
+            renderMindMap();
+        }
+
+        // Collapse All Branches
+        function collapseAll() {
+            lectureBranches.forEach(b => b.expanded = false);
+            renderMindMap();
+        }
+
+        // Select Drug & Render Details in Inspector Panel and Mobile Modal
+        function selectDrug(branchId, drugId) {
+            selectedDrugId = drugId;
+            renderMindMap();
+
+            const branch = lectureBranches.find(b => b.id === branchId);
+            const drug = branch.drugs.find(d => d.id === drugId);
+            if (!drug) return;
+
+            const styles = themeStyles[branch.colorTheme];
+
+            // Update Desktop Panel Headers
+            const panelBadge = document.getElementById('panelCategoryBadge');
+            panelBadge.className = `px-2.5 py-1 text-xs font-bold rounded-lg ${styles.badge}`;
+            panelBadge.textContent = branch.titleAr;
+
+            document.getElementById('panelDrugTitleEn').textContent = drug.nameEn;
+            document.getElementById('panelDrugTitleAr').textContent = `${drug.nameAr} — ${drug.badgeEn}`;
+
+            // Update Mobile Modal Headers
+            const modalBadge = document.getElementById('modalCategoryBadge');
+            modalBadge.className = `inline-block px-2 py-0.5 text-[11px] font-bold rounded-md ${styles.badge} mb-1`;
+            modalBadge.textContent = branch.titleAr;
+
+            document.getElementById('modalDrugTitleEn').textContent = drug.nameEn;
+            document.getElementById('modalDrugTitleAr').textContent = `${drug.nameAr} — ${drug.badgeEn}`;
+
+            // Build Sections HTML
+            const contentHtml = buildDrugSectionsHtml(drug);
+            document.getElementById('panelBody').innerHTML = contentHtml;
+            document.getElementById('modalBody').innerHTML = contentHtml;
+
+            // Open Mobile Modal if on small screen (< 1024px)
+            if (window.innerWidth < 1024) {
+                document.getElementById('mobileModal').classList.remove('hidden');
+            }
+        }
+
+        // Build formatted HTML for selected drug based on current language mode
+        function buildDrugSectionsHtml(drug) {
+            return drug.sections.map(sec => {
+                const arBlock = `
+                    <div class="font-ar text-slate-800 dark:text-slate-100 whitespace-pre-line bg-slate-50 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200/70 dark:border-slate-700/70">
+                        ${sec.ar}
+                    </div>
+                `;
+                const enBlock = `
+                    <div class="font-en text-slate-700 dark:text-slate-200 whitespace-pre-line bg-teal-50/40 dark:bg-teal-950/20 p-3 rounded-xl border border-teal-200/60 dark:border-teal-800/40 text-left">
+                        ${sec.en}
+                    </div>
+                `;
+
+                let bodyContent = '';
+                if (langMode === 'both') {
+                    bodyContent = `<div class="space-y-2">${arBlock}${enBlock}</div>`;
+                } else if (langMode === 'ar') {
+                    bodyContent = arBlock;
+                } else {
+                    bodyContent = enBlock;
+                }
+
+                return `
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-xs font-bold text-teal-700 dark:text-teal-400 px-1">
+                            <span>${sec.labelAr}</span>
+                            <span class="font-en">${sec.labelEn}</span>
+                        </div>
+                        ${bodyContent}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Set Language Mode ('both', 'ar', 'en')
+        function setLangMode(mode) {
+            langMode = mode;
+            
+            // Update desktop & mobile button active styles
+            ['both', 'ar', 'en'].forEach(m => {
+                const dBtn = document.getElementById(`btn-lang-${m}`);
+                const mBtn = document.getElementById(`m-btn-lang-${m}`);
+                const activeClasses = ['bg-teal-600', 'text-white', 'font-bold'];
+                const inactiveClasses = ['text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-800'];
+
+                if (m === mode) {
+                    dBtn.classList.add(...activeClasses);
+                    dBtn.classList.remove(...inactiveClasses);
+                    mBtn.classList.add(...activeClasses);
+                    mBtn.classList.remove(...inactiveClasses);
+                } else {
+                    dBtn.classList.remove(...activeClasses);
+                    dBtn.classList.add(...inactiveClasses);
+                    mBtn.classList.remove(...activeClasses);
+                    mBtn.classList.add(...inactiveClasses);
+                }
+            });
+
+            // Re-render current drug details if one is selected
+            if (selectedDrugId) {
+                for (const b of lectureBranches) {
+                    const d = b.drugs.find(item => item.id === selectedDrugId);
+                    if (d) {
+                        const html = buildDrugSectionsHtml(d);
+                        document.getElementById('panelBody').innerHTML = html;
+                        document.getElementById('modalBody').innerHTML = html;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Search Handler
+        function handleSearch(val) {
+            searchQuery = val;
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (val.trim().length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderMindMap();
+        }
+
+        function clearSearch() {
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderMindMap();
+        }
+
+        // Close Mobile Modal
+        function closeMobileModal() {
+            document.getElementById('mobileModal').classList.add('hidden');
+        }
+
+        // Zoom Controls
+        function adjustZoom(delta) {
+            zoomLevel = Math.min(1.2, Math.max(0.8, +(zoomLevel + delta).toFixed(1)));
+            const container = document.getElementById('mindMapContainer');
+            container.style.transform = `scale(${zoomLevel})`;
+            document.getElementById('zoomLevelText').textContent = `${Math.round(zoomLevel * 100)}%`;
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            const htmlEl = document.documentElement;
+            htmlEl.classList.toggle('dark');
+            const isDark = htmlEl.classList.contains('dark');
+            
+            const iconClass = isDark ? 'fa-sun text-amber-400' : 'fa-moon';
+            document.getElementById('theme-icon-desktop').className = `fa-solid ${iconClass}`;
+            document.getElementById('theme-icon-mobile').className = `fa-solid ${iconClass}`;
+        }
+
+        // Initialize App on Load
+        window.onload = function() {
+            renderMindMap();
+            // Select Acetylcholine by default on desktop so the side panel is immediately useful
+            if (window.innerWidth >= 1024) {
+                selectDrug('direct-agonists', 'acetylcholine');
+            }
+        };
+    </script>
+</body>
+</html>
